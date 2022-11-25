@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <title>Posting!</title>
+    </head>
+    <body>
+        {% for item in items %}
+        <form action="posting/new_post" method="POST">{% csrf_token %}
+            
+        <a href="{{item.get_absolute_url}}" target="_blank" >
+        <p>상품: {{item.item_name}}</p>
+        </a>
+        <p>가격: {{item.item_price}}</p>
+        <p>내용: {{item.item_content}}</p>
+         <!-- 이미지 보여주기 -->
+         {% if item.item_img %}
+         
+         <img src = "{{ item.item_img.url }}" alt="" width='80%'>
+         
+        </hr>
+         <br>
+     {% endif %}
+
+        {% endfor %}
+        </form>
+
+        
+
+
+     
+        <a href="/blog/">목록</a>
+        <a href="/blog/{{post.pk}}/remove">삭제</a>
+        
+        <!-- <form action="" method="post">{% csrf_token %}
+            <div>
+                <input type="text" name="items_input">
+            </div>
+            <div>
+                <input type="submit" name="items_input" value="POST">
+            </div> -->
+        <!-- </form>
+        {% if items %}
+            <h1>
+                {{items.text}}
+            </h1>
+        {% endif %}
+    </form> -->
+    </body>
+</html>
+
+

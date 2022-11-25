@@ -1,0 +1,208 @@
+<html lang="ko">
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="" rel="stylesheet">
+
+    <meta charset="UTF-8">
+
+    <!-- Boot strap -->
+    <!-- 합쳐지고 최소화된 최신 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <style>
+        .content{
+            height: 75%;
+        }
+        .messageDiv{
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+        .custom-btn{
+            font-size: 10px;
+        }
+        .panel-footer{
+            height:10%;
+            color:gray;
+        }
+    </style>
+
+    <title>Excel Calculate</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="">몬스테라 알보</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          
+          <!-- <div class="container-fluid p-0">
+
+         
+            <button type="button" class="btn btn-outline-primary"
+              onclick="location.href='http://127.0.0.1:80/'">Home</button>
+            <button type="button" class="btn btn-outline-primary"
+              onclick="location.href='http://127.0.0.1:80/'">Upload</button>
+            <button type="button" class="btn btn-outline-primary"
+              onclick="location.href='http://127.0.0.1:80/signup/'">Sign up</button>
+            <button type="button" class="btn btn-outline-primary"
+              onclick="location.href='http://127.0.0.1:80/signin/'">Sign in</button> -->
+
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="">홈</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index">사진올리기</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="signup">회원가입</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="signin">로그인</a>
+              </li>
+             
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+
+    <div class="container">
+        <div class="header">
+            <div class="page-header">
+                <h1><a href="logout" class="btn btn-danger btn-xs" style="margin-left: 30px">로그아웃</a></h1>
+            </div>
+        </div>
+
+
+
+
+       <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+  
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  
+  <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyDMBceALWdv9pKd5QZo9oL2ioFPh1RpR_w",
+  authDomain: "hahaha-f510b.firebaseapp.com",
+  projectId: "hahaha-f510b",
+  storageBucket: "hahaha-f510b.appspot.com",
+  messagingSenderId: "629429572244",
+  appId: "1:629429572244:web:43e9d04ff02a343072da81"
+};
+// Initialize Firebase
+  firebase.initializeApp(firebaseConfig); 
+</script>
+
+<div class="container mt-3">
+  <form action="upload/posting" method="POST" enctype="multipart/form-data">{% csrf_token %}
+ 
+    <input type="text" class="form-control mt-2"  name='item_name' placeholder="title" >
+    <input type="text" class="form-control mt-2"  name='item_content' placeholder="content" >
+
+    
+    <input type="text" class="form-control mt-2"  name='item_price' placeholder="price">
+   
+
+    <input class="form-control mt-2" type="file" name="item_img" onchange="loadFile(this)">
+    <input type="submit" value="제출">
+    <!-- <button class="btn btn-danger mt-3" id="send" onclick="submit_click();">올리기</button> -->
+  </form> 
+
+    <hr>
+    <img alt="미리보기" id="preview" />   
+  <input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert('100000~150000')">
+   
+    
+    
+<script type="text/javascript">
+	function loadFile(input){
+		// 여러개의 이미지를 읽을수도 있기 때문에 
+		if(input.files && input.files[0]){
+			var fr = new FileReader();
+			//파일리더로 일고 읽는게 완료되면  만들어준 아이디에 속성값을 지정하여 사용하겠다.
+			fr.onload=function(event){
+				document.getElementById('preview').src=event.target.result;
+			};
+			fr.readAsDataURL(input.files[0]);
+			// 이미지파일을 읽어 온다.
+		}
+		else{
+			document.getElementById('preview').src="";
+		}
+	}
+</script>
+
+  </div>
+  
+
+
+
+
+  
+  <script>
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    $('#send').click(function(){
+
+        var file = document.querySelector('#image').files[0];
+        var storageRef = storage.ref();
+        var 저장할경로 = storageRef.child('image/' + file.name);
+        var 업로드작업 = 저장할경로.put(file)
+        
+        업로드작업.on( 'state_changed', 
+    // 변화시 동작하는 함수 
+    null, 
+    //에러시 동작하는 함수
+    (error) => {
+      console.error('실패사유는', error);
+    }, 
+    // 성공시 동작하는 함수
+    () => {
+      업로드작업.snapshot.ref.getDownloadURL().then((url) => {
+        console.log('업로드된 경로는', url);
+
+        var 저장할거 ={
+            제품: $('#item_name').val(),
+            가격: $('#item_price').val(),
+            내용: $('#item_content').val(),
+            날짜 : new Date(),
+            이미지 : url
+            
+        }
+     db.collection('Item').add(저장할거).then((result)=>{
+        console.log(result);
+        window.location.href = "/posting.html"
+     }).catch((err)=>{
+        console.log(err)
+     })
+      });
+    }
+);
+
+   
+    })
+  
+    
+  </script>
+</body>
+</html>

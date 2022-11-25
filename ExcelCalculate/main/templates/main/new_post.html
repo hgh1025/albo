@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  
+    <!-- <form action="" mehtod="POST">{% csrf_token %} -->
+    <p>상품명: {{items.item_name}}</p>
+    <p>가격: {{items.item_price}}</p>
+    <p>내용: {{items.item_content}}</p>
+    <p>게시날짜: {{items.item_date}}</p>    
+
+   
+         
+    <img src = "{{ items.item_img.url }}" alt="" width='80%'>
+   
+</form>
+</body>
+</html>
+   

@@ -1,0 +1,23 @@
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>blog title</title>
+</head>
+<body>
+    <h1>게시판 페이지입니다.</h1>
+    
+    <table>
+    {% for blog in blogs %}
+           
+            <ul>
+                <li>{{blog.postname}}</li>
+                <li>{{blog.contents}}</li>
+                <li>{{blog.price}}</li>
+                <li><a href="{{blog.pk}}/">{{blog.postname}}</a></li>
+            </ul>
+            
+    {% endfor %}
+    </table>
+    <button><a href="/new_post/">글쓰기</a></button>
+</body>
+</html>
