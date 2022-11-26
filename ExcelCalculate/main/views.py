@@ -3,6 +3,10 @@ from random import *
 from .models import *
 from sendEmail.views import * 
 from django.db import connection
+from django.urls import reverse
+from django.db.models import Q # Q는 Django내 Model을 관리할 때 사용되는 ORM으로 SQL의 WHERE절과 같은 조건문을 추가할 때 사용한다.
+
+
 
 # Create your views here.
 def index(request):
@@ -131,11 +135,11 @@ def new_post(request, pk):
     
 
 def remove_post(request, pk):
+    
     post = Item.objects.get(pk=pk)
-    if request.method == 'POST':
-        post.delete()
-        return redirect('/blog/')
-    return render(request, "main/remove_post.html", {'post':post})
+            
+    post.delete()                                   #1/14 맞으면 삭제
+    return render(request, 'main/posting.html')
 
 
 
