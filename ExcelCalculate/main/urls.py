@@ -20,6 +20,8 @@ urlpatterns = [
     
     path('blog', views.blog, name='main_blog'),
     path('upload/posting/<int:pk>/', views.new_post, name='main_new_post'),
-
     path('upload/posting/<int:pk>/upload/', views.remove_post, name= 'main_remove'),
-]
+    path('upload/posting/<int:pk>/boardEdit/', views.boardEdit, name= 'main_boardEdit'),
+   
+    
+] 

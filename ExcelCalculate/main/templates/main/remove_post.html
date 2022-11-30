@@ -5,9 +5,9 @@
     <title>글 삭제</title>
 </head>
 <body>
-    <form method="POST">
+    <form action="posting" method="POST">
         {% csrf_token %}
-        <h3>{{ Post.postname }} - 삭제하기</h3>
+        <h3>{{ Post.username }} - 삭제하기</h3>
         <button>삭제</button>
 
 

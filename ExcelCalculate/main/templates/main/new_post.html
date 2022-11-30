@@ -8,7 +8,7 @@
 </head>
 <body>
   
-    <!-- <form action="" mehtod="POST">{% csrf_token %} -->
+    <p>작성자: {{items.user_name}}</p>
     <p>상품명: {{items.item_name}}</p>
     <p>가격: {{items.item_price}}</p>
     <p>내용: {{items.item_content}}</p>
@@ -20,14 +20,23 @@
 
     <!-- ---------------------------게시글 삭제 -->
     
-    <p>
-    <a href="upload/{{post.pk}}">삭제</a>
-    <form>
-        <input type="button" class = "btnUpdate" value ="수정">
-    </form>
+  
+
+{% if user_name.user_name == post.user_name %} 
+<p>
+<td><a href="upload/{{post.pk}}">삭제</a></td> 
+<td><a href="boardEdit/{{post.pk}}">수정</a></td> 
 </p>
+{% endif %}
+
+<!-- 11/29 수정 -->
+ 
+<!-- <form action="boardEdit/{{post.pk}}" method="POST">{% csrf_token %}
+<div class="container" style="max-width:500px;">
+<input class="btn btn-dark rounded-pill col-12" type="submit" value="수정하기" onclick="location.href='boardEdit/{{post.pk}}/'">
+
+</div>
+
+</form> -->
+
 </body>
-<script>
-</script>
-</html>
-   

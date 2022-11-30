@@ -6,16 +6,21 @@
         {% for item in items %}
         <form action="posting/new_post" method="POST">{% csrf_token %}
             
-        <a href="{{item.get_absolute_url}}" target="_blank" >
-        <p>상품: {{item.item_name}}</p>
-        </a>
-        <p>가격: {{item.item_price}}</p>
-        <p>내용: {{item.item_content}}</p>
+     
+        
          <!-- 이미지 보여주기 -->
          {% if item.item_img %}
          
-         <img src = "{{ item.item_img.url }}" alt="" width='80%'>
-         
+         <img src = "{{ item.item_img.url }}" alt="" width='50%'>
+
+         <p>상품: {{item.item_name}}</p> 
+         <p>가격: {{item.item_price}}</p>
+        <p>내용: {{item.item_content}}</p>
+        
+        <p>작성자: {{item.user_name}}</p>  <!-- # 22.11.28 --> 
+         <a href="{{item.get_absolute_url}}" id="del_item" target="_blank" >
+            <p><input type="button" name="item_submit" value="상세 페이지"></p>
+            </a>
       
         </hr>
          <br>

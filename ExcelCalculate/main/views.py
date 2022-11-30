@@ -37,6 +37,21 @@ def join(request):
         return HttpResponse("이메일 발송에 실패했습니다.")
 
 def signin(request):
+    # username = User.objects.get(['user_name'])
+    # password = User.objects.get(['user_password'])
+    # if username and password:
+    #     try:
+    #         member = User.objects.get(username=username)
+    #     except User.DoesNotExist:
+    #         self.add_error('username', '아이디가 없습니다!')
+    #         return
+    #     # 예외처리를 하고 return 을 실행해서 바로 아래 코드를 실행하지 않고 빠져나오게 한다.
+
+    # if not password(password, member.password):
+    #     self.add_error('password', '비밀번호가 다릅니다!')
+    # else:
+    #     self.user_id = member.id
+
     return render(request, 'main/signin.html')
 
 def login(request):
@@ -46,7 +61,7 @@ def login(request):
     if user.user_password == loginPW:
         request.session['user_name'] = user.user_name
         request.session['user_email'] = user.user_email
-        return redirect('main_index')
+        return redirect('main_upload')
     else:
         return redirect('main_signin')   
 
@@ -83,15 +98,7 @@ def result(request):
         return redirect('main_signin')
 
 def upload(request):
-    # if request.method == "POST":
-    #     name = request.POST.get('items_name')
-    #     content = request.POST.get('items_content')
-    #     pirce = request.POST.get('items_pirce')
-    #     new_item =  Item()
-    #     new_item.text = name
-    #     new_item.text = content
-    #     new_item.text = pirce
-    #     new_item.save()
+ 
         return render(request, 'main/upload.html')
     
 
@@ -103,7 +110,8 @@ def posting(request):
     #     new_item.save()
     #     return render(request, 'main/posting.html',{'items':new_item})
     items = Item.objects.all().order_by('-pk') 
-
+    # users = Item.objects.filter().select_related("write_name") #fk추가
+    users = User.objects.get(user_name=request.session['user_name']) #fk추가
     print(request)
     item_name = request.POST['item_name']
     item_price =request.POST['item_price']
@@ -111,7 +119,7 @@ def posting(request):
     item_img= request.FILES['item_img']
     
 
-    new_name = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img)
+    new_name = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, user_name= users)# model = ...
     
     new_name.save()
      
@@ -127,19 +135,43 @@ def blog(request):
     
 
 def new_post(request, pk):
-  
-  items = Item.objects.get(pk=pk)
-
- 
-  return render(request, 'main/new_post.html',{'items': items})
+    
+    items = Item.objects.get(pk=pk)
+    
+                                      #1/14 맞으면 삭제
+    return render(request, 'main/new_post.html',{'items': items})
     
 
 def remove_post(request, pk):
-    
-    post = Item.objects.get(pk=pk)
-            
-    post.delete()                                   #1/14 맞으면 삭제
-    return render(request, 'main/posting.html')
+    #사용자가 작성자라면 삭제 (22.11.29 허지훈)
+    user_name = User.objects.filter(user_name=pk)
+    post = Item.objects.filter(user_name=pk)
+    if user_name == post:
+        user_name.delete()
+        post.delete()
+        return render(request, 'main/posting.html',{'user_name': user_name})
+   
+    else:
+                                      #1/14 맞으면 삭제
+        return render(request, 'main/posting.html',{'post': post})
 
 
+def boardEdit(request, pk):
+    board = User.objects.filter(user_name=pk)
+    items = Item.objects.filter(user_name=pk)
+    if request.method == "POST":
+        # try:
+        
+        item_name = request.POST['item_name']
+        item_content = request.POST['item_content']
+        item_price = request.POST['item_price']
+        item_img =request.POST['item_img']
 
+        new_board = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, board=board)
+        new_board.save()
+        return redirect('upload/posting/<int:pk>/boardEdit/',{'board':board})
+        # except:
+        #     return HttpResponse('정보가 일치하지 않습니다.')
+    else:
+        
+        return render(request, 'main/boardEdit.html')

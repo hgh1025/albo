@@ -16,4 +16,6 @@ def calculate(request):
     file.name = file_upload_name
     document = Document(user_upload_file = file)
     document.save()
+
+
    
