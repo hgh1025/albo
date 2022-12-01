@@ -5,7 +5,7 @@ from sendEmail.views import *
 from django.db import connection
 from django.urls import reverse
 from django.db.models import Q # Q는 Django내 Model을 관리할 때 사용되는 ORM으로 SQL의 WHERE절과 같은 조건문을 추가할 때 사용한다.
-
+from .forms import *
 
 
 # Create your views here.
@@ -83,7 +83,7 @@ def verify(request):
         response = redirect('main_index')
         response.delete_cookie('code')
         response.delete_cookie('user_id')
-        # response.set_cookie('user', user)
+       
         request.session['user_name'] = user.user_name
         request.session['user_email'] = user.user_email
         return response
@@ -113,6 +113,7 @@ def posting(request):
     # users = Item.objects.filter().select_related("write_name") #fk추가
     users = User.objects.get(user_name=request.session['user_name']) #fk추가
     print(request)
+    print(users)
     item_name = request.POST['item_name']
     item_price =request.POST['item_price']
     item_content = request.POST['item_content']
@@ -138,40 +139,93 @@ def new_post(request, pk):
     
     items = Item.objects.get(pk=pk)
     
-                                      #1/14 맞으면 삭제
-    return render(request, 'main/new_post.html',{'items': items})
+    login_user = request.session['user_name']
+    post_user = str(items.user_name)
+
+    comments = CommentForm() #forms.py
+   
+    context = dict()
+    context['items'] = items
+    context['comments'] = comments
+    context['login_user'] = login_user
+    context['post_user'] =  post_user
+                                  #1/14 맞으면 삭제
+    return render(request, 'main/new_post.html', context)
     
 
-def remove_post(request, pk):
-    #사용자가 작성자라면 삭제 (22.11.29 허지훈)
-    user_name = User.objects.filter(user_name=pk)
-    post = Item.objects.filter(user_name=pk)
-    if user_name == post:
-        user_name.delete()
-        post.delete()
-        return render(request, 'main/posting.html',{'user_name': user_name})
+# def remove_post(request, pk):
+#     #사용자가 작성자라면 삭제 (22.11.29 허지훈)
+#     user_name = User.objects.filter(user_name=pk)
+#     post = Item.objects.filter(user_name=pk)
+    
+#     if request.method == post:
+#         form = EditForm(request.POST, request.FILES)
+
+#         if form.is_valid():
+#             post.delete()
+#         return redirect('new_post' ,{'user_name': user_name})
+    
+#     else:
+#         form = EditForm()
+    
+#     return render(request, 'main/new_post.html' ,{'user_name': user_name})
+    
+ 
+# def remove_post(request, pk):
+#     #사용자가 작성자라면 삭제 (22.11.29 허지훈)
+#     post = Item.objects.get(pk=pk)
+#     # request = User.objects.get(user_name=request.session['user_name'])
+#     remove_request =  request.session['user_name']
    
-    else:
-                                      #1/14 맞으면 삭제
-        return render(request, 'main/posting.html',{'post': post})
+#     if remove_request != post.user_name:
+#         return render(request, 'main/new_post.html',{'post': post})    
+    
+#     post.delete()
+    
+#     print(post)
+#     print(remove_request)
+#     return render(request, 'main/posting.html',{'post': post}) 
+
+    
+def remove_post(request, pk):
+    post = Item.objects.get(pk=pk)
+    items = Item.objects.all()
+    # request.method == 'POST'
+    post.delete()
+    return render(request, 'main/index.html', {'items':items})
+    
 
 
 def boardEdit(request, pk):
-    board = User.objects.filter(user_name=pk)
-    items = Item.objects.filter(user_name=pk)
+    board = User.objects.get(user_name=pk)
+    items = Item.objects.get(user_name=pk)
+    
+    
     if request.method == "POST":
-        # try:
-        
+       
         item_name = request.POST['item_name']
         item_content = request.POST['item_content']
         item_price = request.POST['item_price']
         item_img =request.POST['item_img']
 
-        new_board = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, board=board)
+        new_board = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, board=board, items=items)
         new_board.save()
-        return redirect('upload/posting/<int:pk>/boardEdit/',{'board':board})
-        # except:
-        #     return HttpResponse('정보가 일치하지 않습니다.')
-    else:
+    
+    return render(request, 'main/new_post.html', {'items':items})
+ 
+   
+
+def create_comment(request, item_id):
+    
+    filled_form = CommentForm(request.POST) #POST 요청이 들어오면,
+    if filled_form.is_valid(): #유효성 검사 성공시 진행
+        temp_form = filled_form.save(commit=False)
         
-        return render(request, 'main/boardEdit.html')
+        temp_form.item_id = Item.objects.get(id=item_id)
+        temp_form.user_name = User.objects.get(user_name=request.session['user_name'])
+        temp_form.comment_state = "댓글"
+        temp_form.save()
+
+    return redirect('new_post', item_id)
+
+

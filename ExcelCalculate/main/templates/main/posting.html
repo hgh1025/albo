@@ -1,8 +1,9 @@
 <html>
     <head>
-        <title>Posting!</title>
+        <title>게시글!</title>
     </head>
     <body>
+        
         {% for item in items %}
         <form action="posting/new_post" method="POST">{% csrf_token %}
             
@@ -21,7 +22,8 @@
          <a href="{{item.get_absolute_url}}" id="del_item" target="_blank" >
             <p><input type="button" name="item_submit" value="상세 페이지"></p>
             </a>
-      
+            <!-- def get_absolute_url(self):
+            return f'/upload/posting/{self.pk}/' -->
         </hr>
          <br>
      {% endif %}
@@ -33,7 +35,7 @@
 
 
         
-        <a href="/upload">재업로드</a>
+        <!-- <a href="/upload">재업로드</a> -->
        
         
         <!-- <form action="" method="post">{% csrf_token %}

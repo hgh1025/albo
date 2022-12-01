@@ -1,83 +1,58 @@
-<html lang="ko">
-<head>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link href="" rel="stylesheet">
-
-    <meta charset="UTF-8">
-
-    <!-- Boot strap -->
-    <!-- 합쳐지고 최소화된 최신 CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <!-- 부가적인 테마 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-    <style>
-        .content{
-            height: 75%;
-        }
-        .messageDiv{
-            margin-top: 20px;
-            margin-bottom: 50px;
-        }
-        .custom-btn{
-            font-size: 10px;
-        }
-        .panel-footer{
-            height:10%;
-            color:gray;
-        }
-    </style>
-
-    <title>Excel Calculate</title>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="">몬스테라 알보</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          
-          <!-- <div class="container-fluid p-0">
-
+<html>
+    <head>
+        <title>게시글!</title>
+    </head>
+    <body>
+        
+        {% for item in items %}
+        <form action="posting/new_post" method="POST">{% csrf_token %}
+            
+     
+        
+         <!-- 이미지 보여주기 -->
+         {% if item.item_img %}
          
-            <button type="button" class="btn btn-outline-primary"
-              onclick="location.href='http://127.0.0.1:80/'">Home</button>
-            <button type="button" class="btn btn-outline-primary"
-              onclick="location.href='http://127.0.0.1:80/'">Upload</button>
-            <button type="button" class="btn btn-outline-primary"
-              onclick="location.href='http://127.0.0.1:80/signup/'">Sign up</button>
-            <button type="button" class="btn btn-outline-primary"
-              onclick="location.href='http://127.0.0.1:80/signin/'">Sign in</button> -->
+         <img src = "{{ item.item_img.url }}" alt="" width='50%'>
+
+         <p>상품: {{item.item_name}}</p> 
+         <p>가격: {{item.item_price}}</p>
+        <p>내용: {{item.item_content}}</p>
+        
+        <p>작성자: {{item.user_name}}</p>  <!-- # 22.11.28 --> 
+         <a href="{{item.get_absolute_url}}" id="del_item" target="_blank" >
+            <p><input type="button" name="item_submit" value="상세 페이지"></p>
+            </a>
+            <!-- def get_absolute_url(self):
+            return f'/upload/posting/{self.pk}/' -->
+        </hr>
+         <br>
+     {% endif %}
+
+        {% endfor %}
+        </form>
+
+        
 
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="">홈</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="new_post">게시글</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="upload">사진올리기</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="signup">회원가입</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="signin">로그인</a>
-              </li>
-              
-             
-            </ul>
-          </div>
-        </div>
-      </nav>
+        <form method="POST" action="{% url 'main_index' %}">{% csrf_token %}
+          <button>홈</button>
+          </form>
+     
+       
+        
+        <!-- <form action="" method="post">{% csrf_token %}
+            <div>
+                <input type="text" name="items_input">
+            </div>
+            <div>
+                <input type="submit" name="items_input" value="POST">
+            </div> -->
+        <!-- </form>
+        {% if items %}
+            <h1>
+                {{items.text}}
+            </h1>
+        {% endif %}
+    </form> -->
+    </body>
+</html>

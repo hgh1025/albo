@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>상세페이지</title>
 </head>
+<style>
+
+</style>
 <body>
   
     <p>작성자: {{items.user_name}}</p>
@@ -16,27 +19,37 @@
 
    
          
-    <img src = "{{ items.item_img.url }}" alt="" width='80%'>
+    <img src = "{{ items.item_img.url }}" class="rounded float-start" alt="" width='80%'>
 
     <!-- ---------------------------게시글 삭제 -->
     
-  
+    
 
-{% if user_name.user_name == post.user_name %} 
+{% if login_user ==  post_user %} 
+
 <p>
-<td><a href="upload/{{post.pk}}">삭제</a></td> 
-<td><a href="boardEdit/{{post.pk}}">수정</a></td> 
+   
+<a href="upload/{{post.pk}}">삭제</a>
+<a href="boardEdit/{{post.pk}}">수정</a> 
 </p>
 {% endif %}
 
-<!-- 11/29 수정 -->
- 
-<!-- <form action="boardEdit/{{post.pk}}" method="POST">{% csrf_token %}
-<div class="container" style="max-width:500px;">
-<input class="btn btn-dark rounded-pill col-12" type="submit" value="수정하기" onclick="location.href='boardEdit/{{post.pk}}/'">
 
-</div>
 
-</form> -->
-
+    <!-- 댓글기능(11.29) -->
+    
+    <form method="POST" action="{% url 'create_comment' items.id %}">{% csrf_token %}
+        
+        {{comments}}
+        
+        <input type="submit", value="완료">
+        <!-- (related_name=post) -->
+        {% for i in items.post.all %}
+        <p>댓글: {{i}}</p>
+        <p>작성자: {{i.user_name}}</p>
+        <p>시간: {{i.comment_date}}</p>
+        {% endfor %}
+        
+    </form>
+    
 </body>

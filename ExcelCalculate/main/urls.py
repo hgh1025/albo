@@ -19,9 +19,9 @@ urlpatterns = [
     path('upload/posting', views.posting, name='main_posting'),
     
     path('blog', views.blog, name='main_blog'),
-    path('upload/posting/<int:pk>/', views.new_post, name='main_new_post'),
-    path('upload/posting/<int:pk>/upload/', views.remove_post, name= 'main_remove'),
-    path('upload/posting/<int:pk>/boardEdit/', views.boardEdit, name= 'main_boardEdit'),
-   
+    path('upload/posting/<int:pk>/', views.new_post, name='new_post'),
+    path('upload/posting/<int:pk>/upload/', views.remove_post, name= 'remove_post'),
+    path('upload/posting/<int:pk>/boardEdit/', views.boardEdit, name= 'boardEdit'),
+    path('create_comment/<int:item_id>', views.create_comment, name='create_comment'),
     
 ] 
