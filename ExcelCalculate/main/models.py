@@ -21,7 +21,8 @@ class Item(models.Model):
     user_name = models.ForeignKey(User, to_field='user_name', related_name='seller', on_delete = models.CASCADE, db_column="user_name", max_length= 20, null=True) #fk추가
     # item_id = models.AutoField(primary_key=True) #게시글ID
      #-------------------------------------------------
-    # trade_status = models.CharField() #거래상태(판매중,거래완료)
+    STATUS = (('거래 전','거래 전'), ('거래 완료','거래 완료')) # 전자가 테이블 컬럼 출력값, 후자가 admin 페이지에서 출력
+    trade_status = models.CharField(max_length=5,default='거래 전', choices=STATUS, null=True) #거래상태(판매중,거래완료)
     item_price = models.IntegerField(null=True)
     item_content = models.TextField(max_length = 200) 
     item_img = models.ImageField(upload_to="images/", blank=True, null=True)
@@ -58,3 +59,13 @@ class BoardForm(ModelForm):
         
 # class posting(models.Model):
 #     user_name =  models.CharField(max_length= 20 , unique=True)
+
+# class predict_data(models.Model):
+#     trade_status = models.ForeignKey(Item,) #거래상태(판매중,거래완료)
+#     item_img = models.ImageField()
+#     item_price = models.IntegerField(null=True) 
+    
+class Trade(models.Model):
+        item_img = models.ImageField(upload_to="images/", blank=True, null=True)
+        item_price = models.IntegerField(null=True)
+        trade_date = models.DateTimeField(auto_now_add=True, null=True)

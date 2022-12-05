@@ -9,7 +9,7 @@ urlpatterns = [
     path("calculate/", include('calculate.urls'), name='calculate'),
     path("", include('main.urls'), name='main'),
     path("admin/", admin.site.urls),
-    path('blog/', blog, name='blog'),
-    path('blog/<int:pk>/', posting, name='posting'),
+    # path('blog/', blog, name='blog'),
+    # path('blog/<int:pk>/', posting, name='posting'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

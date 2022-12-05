@@ -117,21 +117,24 @@
  
     <input type="text" class="form-control mt-2"  name='item_name' placeholder="title" >
     <input type="text" class="form-control mt-2"  name='item_content' placeholder="content" >
-
-    
     <input type="text" class="form-control mt-2"  name='item_price' placeholder="price">
-   
-
+    
     <input class="form-control mt-2" type="file" name="item_img" onchange="loadFile(this)">
-    <input type="submit" value="제출">
+
+
+      <input type="submit" value="제출">
+      <input type="checkbox" name="trade_status" id="status" value="거래전">
+      <label for ="status">거래 전</label>
     <!-- <button class="btn btn-danger mt-3" id="send" onclick="submit_click();">올리기</button> -->
   </form> 
-
+ 
+   
     <hr>
     <img alt="미리보기" id="preview" />   
-  <input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert('100000~150000')">
+  <input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert('예측값')">
    
-    
+
+
     
 <script type="text/javascript">
 	function loadFile(input){

@@ -22,3 +22,9 @@ class EditForm(forms.ModelForm):
     class Meta:
         model = Item
         fields= ['item_name','item_price','item_content','item_img']
+
+
+# class status(forms.ModelForm):
+#     class Meta:
+#         model = Trade
+#         fields = ['item_img', 'item_status','item_price']

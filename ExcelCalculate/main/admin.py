@@ -5,4 +5,4 @@ from . models import *
 admin.site.register(User)
 admin.site.register(Item)
 admin.site.register(Comment)
-
+admin.site.register(Trade)

@@ -6,7 +6,7 @@ from django.db import connection
 from django.urls import reverse
 from django.db.models import Q # Q는 Django내 Model을 관리할 때 사용되는 ORM으로 SQL의 WHERE절과 같은 조건문을 추가할 때 사용한다.
 from .forms import *
-
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -114,13 +114,16 @@ def posting(request):
     users = User.objects.get(user_name=request.session['user_name']) #fk추가
     print(request)
     print(users)
+
+    trade_status = request.POST.get('trade_status')
     item_name = request.POST['item_name']
     item_price =request.POST['item_price']
     item_content = request.POST['item_content']
     item_img= request.FILES['item_img']
-    
-
-    new_name = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, user_name= users)# model = ...
+    now_HMS = datetime.today().strftime('%Y.%H.%M.%S')
+    item_upload_name  = now_HMS + '.png'
+    item_img.name = item_upload_name 
+    new_name = Item(trade_status=trade_status, item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, user_name= users)# model = ...
     
     new_name.save()
      
@@ -139,9 +142,10 @@ def new_post(request, pk):
     
     items = Item.objects.get(pk=pk)
     
+    # trade_status = items.trade_status
     login_user = request.session['user_name']
     post_user = str(items.user_name)
-
+     
     comments = CommentForm() #forms.py
    
     context = dict()
@@ -149,6 +153,7 @@ def new_post(request, pk):
     context['comments'] = comments
     context['login_user'] = login_user
     context['post_user'] =  post_user
+    context['trade_status'] = items.trade_status
                                   #1/14 맞으면 삭제
     return render(request, 'main/new_post.html', context)
     
@@ -197,20 +202,25 @@ def remove_post(request, pk):
 
 
 def boardEdit(request, pk):
-    board = User.objects.get(user_name=pk)
-    items = Item.objects.get(user_name=pk)
-    
+    # board = User.objects.filter(user_name=pk)
+    items = Item.objects.filter(user_name=pk)
+    # board = User.objects.filter(user_name=request.session['user_name'])
     
     if request.method == "POST":
        
         item_name = request.POST['item_name']
         item_content = request.POST['item_content']
         item_price = request.POST['item_price']
-        item_img =request.POST['item_img']
+        item_img =request.FILES['item_img']
 
-        new_board = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, board=board, items=items)
-        new_board.save()
+        new_item = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, items=items)
+        # new_board = User(board=board)
+
+        new_item.save()
+        # new_board.save()
     
+    
+
     return render(request, 'main/new_post.html', {'items':items})
  
    
@@ -229,3 +239,14 @@ def create_comment(request, item_id):
     return redirect('new_post', item_id)
 
 
+def trade(request, item_id):
+    filled_form = Trade(request.POST) #POST 요청이 들어오면,
+    if filled_form.is_valid(): #유효성 검사 성공시 진행
+        
+        temp_form = filled_form.save(commit=False)
+        
+        temp_form.item_id = Item.objects.get(id=item_id)
+        temp_form.user_name = User.objects.get(user_name=request.session['user_name'])
+        temp_form.item_status = "거래상태"
+        temp_form.save()
+    return redirect('posting', {'trade':trade})

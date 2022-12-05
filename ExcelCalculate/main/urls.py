@@ -21,7 +21,7 @@ urlpatterns = [
     path('blog', views.blog, name='main_blog'),
     path('upload/posting/<int:pk>/', views.new_post, name='new_post'),
     path('upload/posting/<int:pk>/upload/', views.remove_post, name= 'remove_post'),
-    path('upload/posting/<int:pk>/boardEdit/', views.boardEdit, name= 'boardEdit'),
+    path('upload/posting/<int:pk>/edit/', views.boardEdit, name= 'boardEdit'),
     path('create_comment/<int:item_id>', views.create_comment, name='create_comment'),
-    
+    path('trade', views.trade, name='trade'), 
 ] 
