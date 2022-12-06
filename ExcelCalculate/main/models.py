@@ -45,11 +45,23 @@ class Comment(models.Model):
     item_id = models.ForeignKey(Item, to_field='id', related_name='post', on_delete = models.CASCADE, db_column="item_id") #게시글ID
     comment = models.TextField() #댓글/답글 내용
     comment_date = models.DateTimeField(auto_now_add=True) #등록날짜
-    comment_state = models.CharField(max_length = 10) #상태(댓글or답글)
-    reply_location = models.IntegerField(null=True) #위치 : 댓글은 null / 답글은 해당 댓글의 댓글번호 부여
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='reply')
+
+    class Meta:
+        ordering=['-comment_date'] #댓글작성시간 내림차순
 
     def __str__(self):
-        return self.comment
+        return str(self.user_name) + 'comment' + str(self.comment)
+
+    @property
+    def children(self): #답글일 경우
+        return Comment.objects.filter(parent=self).reverse()
+
+    @property
+    def is_parent(self):
+        if self.parent is None: #댓글일 경우
+            return True
+        return False
 
 
 class BoardForm(ModelForm):

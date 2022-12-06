@@ -128,11 +128,57 @@
   </form> 
  
    
-    <hr>
-    <img alt="미리보기" id="preview" />   
-  <input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert('예측값')">
-   
+  <hr>
+  <img alt="미리보기" id="preview" />   
+<!-- <input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert('100000~150000')"> -->
 
+<form method="POST" id ="form1" enctype="multipart/form-data">{% csrf_token %}
+
+  <p>가격 예측</p>
+  <p><input type="file" name="file1" id="file1"></p>
+  <div>
+      <img src="" id="targetImg" style="width:300px">
+  </div>
+  <p><input type="button" value="가격예측하기" id="writeBtn"></p>
+
+  
+
+
+</form> 
+
+
+<input type="button" id="가격을 예측해 드려요" value="예측값 확인" onclick="alert('{{predict}}')">
+<!-- <hr>
+  <img alt="미리보기" id="preview" />   
+<input type="text" id="가격을 예측해 드려요" placeholder="가격을 예측해 드려요" onchange="alert({{predict}})">
+-->
+
+<script>
+  $(function(){
+      $('#writeBtn').click(function(){
+          $('#form1').attr('action','upload/predict_price')
+          $('#form1').submit()
+      });//클릭함수
+      
+      //html5 파일 기능
+      $('#file1').change(function(){
+          //업로드 파일 읽기
+          let fileInfo = document.getElementById("file1").files[0];
+          console.log(fileInfo)
+          let reader = new FileReader();
+          //readAsDataURL()을 통해 파일을 읽어들일 때 onload가 실행
+          reader.onload=function(){
+              document.getElementById("targetImg").src = reader.result;
+          };
+          if(fileInfo){
+              //readAsDataURL()을 통해 파일의 URL을 읽어온다.
+              reader.readAsDataURL(fileInfo);
+          }
+      })//chang 함수
+  })//시작함수
+</script>
+
+<!-- --------------------------------------------- -->
 
     
 <script type="text/javascript">

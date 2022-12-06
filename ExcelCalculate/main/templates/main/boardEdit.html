@@ -11,19 +11,43 @@
 
     <div class="container mt-3">
         <form action="posting" method="POST" enctype="multipart/form-data">{% csrf_token %}
-       <p>상품명: {{items.item_name}}<input type="text" class="form-control mt-2"  name='item_name' placeholder="title" ></p>
-       <p>가격: {{items.item_price}}<input type="text" class="form-control mt-2"  name='item_price' placeholder="price"></p>
-       <p>내용: {{items.item_content}}<input type="text" class="form-control mt-2"  name='item_content' placeholder="content" ></p>
-       <p>이미지<input class="form-control mt-2" type="file" name="item_img" onchange="loadFile(this)"></p>
-      
-          
-         
-         
-      
-          
-          <input type="submit" value="수정">
-          <!-- <button class="btn btn-danger mt-3" id="send" onclick="submit_click();">올리기</button> -->
-        </form> 
+       <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세페이지</title>
+</head>
+<style>
+
+</style>
+<body>
+
+    <form method="POST" action="{% url 'boardEdit' items.pk %}">{% csrf_token %}    
+        <p>작성자: {{items.user_name}}</p>
+        <p><input type="text" class="form-control mt-2"  name='item_name' placeholder="상품이름: {{items.item_name}}" ></p>
+            
+        <p> <input type="text" class="form-control mt-2"  name='item_price' placeholder="상품 가격: {{items.item_price}}" ></p>
+        <p> <input type="text" class="form-control mt-2"  name='item_content' placeholder="내용: {{items.item_content}}" ></p>
+        
+            <select name="trade_status">
+                <option name="trade_status" value="dealing">거래전</option>
+                <option name="trade_status" value="deal_commit">거래완료</option>
+            </select>
+        
+        {% if login_user ==  post_user %} 
+            <input class = "btn btn-dark" type="submit" value="수정" onclick="location.href='/edit/{{post.pk}}/'">
+            <input class = "btn btn-dark" type="submit" value="삭제" onclick="location.href='/upload/{{post.pk}}/'">
+        
+<!--         
+        {% comment %} <p>
+        <a href="edit/{{post.pk}}">수정</a>  
+        <a href="upload/{{post.pk}}">삭제</a>
+        
+        </p> {% endcomment %} -->
+        {% endif %}    
+        </form>
     <td><a href="/{{post.pk}}">수정 완료</a></td>
 </body>
 </html>

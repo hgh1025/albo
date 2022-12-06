@@ -4,19 +4,12 @@ from django import forms
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['comment']
-        widgets= {
-            'comment': forms.Textarea(attrs={'class': 'form-control'}),
-        }
+        fields = ['comment',]
 
-        labels={
-            'comment': '질문',
-        }
-
-class ReCommentForm(forms.ModelForm):
+class ReplyForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['comment', 'reply_location']
+        fields = ['comment','parent']
 
 class EditForm(forms.ModelForm):
     class Meta:

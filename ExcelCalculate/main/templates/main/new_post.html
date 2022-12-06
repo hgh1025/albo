@@ -49,20 +49,40 @@
         </p> {% endcomment %} -->
 
 
-    <!-- 댓글기능(11.29) -->
+     <!-- 댓글기능11.30 -->
 
-    <form method="POST" action="{% url 'create_comment' items.id %}">{% csrf_token %}
+<h2> Comments </h2>
 
-        {{comments}}
+<form method="POST" action="{% url 'create_comment' items.id %}">
+    {% csrf_token %}
+    {{comments}}
+    <input type="submit", value="작성">
+</form>
 
-        <input type="submit" , value="완료">
-        <!-- (related_name=post) -->
-        {% for i in items.post.all %}
-        <p>댓글: {{i}}</p>
-        <p>작성자: {{i.user_name}}</p>
-        <p>시간: {{i.comment_date}}</p>
-        {% endfor %}
+<!-- items와 "post" 관계로 fk 설정된 객체 전부 -->
+{% for comment in items.post.all reversed %}
+    {% if comment.is_parent %} <!--def is_paretn가 True면-->
+    <p>시간: {{comment.comment_date}}</p>
+    <h3> <b>{{ comment.user_name }} : </b> {{ comment.comment }}</h3> 
+    <!--답글달기-->
+    &nbsp; &nbsp; &nbsp;
+    <!-- url 주소 바꿔야할듯...11.30 -->
+    <form method="POST" action="{% url 'create_reply' items.id %}" class="replies">
+        {% csrf_token %}
+       <div>
+           &nbsp; &nbsp; &nbsp;<label for="comment">답글</label>
+           &nbsp; &nbsp; &nbsp;<input type="text" name="comment"> <input type="hidden" value="{{comment.pk}}" name="parent"> <input type="submit" value="작성"></div>
+       </div>
+    </form> 
 
-    </form>
+
+    {% endif %} 
+    
+    {% for replies in comment.children %} <!--def children이 True면-->
+       <h3>&nbsp; &nbsp; &nbsp; <b>{{ replies.user_name }} : </b> {{ replies.comment }}</h3>
+    {% endfor %}
+  {% endfor %}
+
 
 </body>
+</html>

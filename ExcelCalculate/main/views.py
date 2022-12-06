@@ -8,6 +8,20 @@ from django.db.models import Q # Q는 Django내 Model을 관리할 때 사용되
 from .forms import *
 from datetime import datetime
 
+from PIL import Image
+import tensorflow as tf
+import os,glob
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras.models import load_model, Model
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.layers import Input, Dense, GlobalAveragePooling2D
+import shutil
+
+
+import pandas as pd
 # Create your views here.
 def index(request):
     if 'user_name' in request.session.keys():
@@ -116,7 +130,7 @@ def posting(request):
     item_content = request.POST.get('item_content',False)
     item_img= request.FILES.get('item_img')
     now_HMS = datetime.today().strftime('%Y.%H.%M.%S')
-    item_upload_name  = now_HMS + '.png'
+    item_upload_name  = now_HMS + '.jpeg'
     item_img.name = item_upload_name 
     new_name = Item(trade_status=trade_status, item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, user_name= users)# model = ...
     
@@ -152,7 +166,51 @@ def new_post(request, pk):
                                   #1/14 맞으면 삭제
     return render(request, 'main/new_post.html', context)
     
+UPLOAD_DIR = r'C:\albino\My-albo\ExcelCalculate\media\images'
 
+
+#가격예측버튼 누르면 실행되는 함수
+def predict_price(request):
+    #predict_img = request.POST['predict_img']
+
+    if 'file1' in request.FILES:
+        file = request.FILES['file1']
+        file_name = file.name
+        fp = open("%s%s" % (UPLOAD_DIR, file_name), 'wb')
+
+    for chunk in file.chunks():
+        fp.write(chunk)
+        fp.close()
+
+    model_weight_path = r'C:\albino\My-albo\ExcelCalculate\epoch100.h5'
+    img = Image.open("%s%s"%(UPLOAD_DIR,file_name))
+
+
+    #가격예측함수
+    def predict(model_path, img):
+        
+        model_saved = load_model(model_path)
+
+        img = image.img_to_array(img)
+        img = np.expand_dims(img, axis=0)
+        img = preprocess_input(img)
+
+        prediction = model_saved.predict(img)
+        label = np.argmax(prediction[0])
+
+        if label == 0:
+            return '10만원 이상 45만원 미만'
+        elif label == 1:
+            return '45만원 이하 80만원 미만'
+        else:
+            return '80만원 이상 160만원 미만'
+
+    
+    
+    context = dict()
+    context['predict'] = predict(model_weight_path, img)
+
+    return render(request, 'main/upload.html', context) 
 # def remove_post(request, pk):
 #     #사용자가 작성자라면 삭제 (22.11.29 허지훈)
 #     user_name = User.objects.filter(user_name=pk)
@@ -213,29 +271,60 @@ def boardEdit(request, pk):
         # # new_board = User(board=board)
         
         items.save()
-        # new_item.save()
-        # new_board.save()
+
+        items = Item.objects.get(pk=pk)
+    
+        if items.trade_status == "거래완료":
+            item_img = items.item_img
+            item_price = items.item_price
+            
+            status = Trade(item_img=item_img, item_price=item_price)
+            
+            status.save()
+
     items = Item.objects.all()
     # context = dict()
     # context['item'] = items  
     print(type(items))
     print(items)
-    return render(request, 'main/index.html', {'items':items})
+   
+   
+    return render(request, 'main/posting.html', {'items':items})
  
    
 
-def create_comment(request, item_id):
-    
-    filled_form = CommentForm(request.POST) #POST 요청이 들어오면,
-    if filled_form.is_valid(): #유효성 검사 성공시 진행
-        temp_form = filled_form.save(commit=False)
+def create_comment(request, items_id):
+    comment_form = CommentForm(request.POST)
+    if comment_form.is_valid():
+        comment = comment_form.cleaned_data['comment']
+        parent=None
         
-        temp_form.item_id = Item.objects.get(id=item_id)
-        temp_form.user_name = User.objects.get(user_name=request.session['user_name'])
-        temp_form.comment_state = "댓글"
-        temp_form.save()
 
-    return redirect('new_post', item_id)
+    user = User.objects.get(user_name=request.session['user_name'])
+    items = Item.objects.get(pk=items_id)
+    
+
+    new_comment = Comment(comment=comment, user_name=user, item_id=items, parent=parent)
+    new_comment.save()
+
+    return redirect('main_new_post', items_id)
+
+def create_reply(request, items_id):
+    reply_form = ReplyForm(request.POST) 
+    if reply_form.is_valid():
+        parent = reply_form.cleaned_data['parent']
+        reply = reply_form.cleaned_data['comment']
+        
+
+    user = User.objects.get(user_name=request.session['user_name'])
+    items = Item.objects.get(pk=items_id)
+
+    print("hello")
+
+    new_comment = Comment(comment=reply, user_name=user, item_id=items, parent=parent)
+    new_comment.save()
+
+    return redirect('main_new_post', items_id)
 
 
 def trade(request, item_id):
@@ -249,3 +338,6 @@ def trade(request, item_id):
         temp_form.item_status = "거래상태"
         temp_form.save()
     return redirect('posting', {'trade':trade})
+
+
+
