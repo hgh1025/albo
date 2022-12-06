@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,56 +10,59 @@
 <style>
 
 </style>
+
 <body>
 
-    <p>작성자: {{items.user_name}}</p>
-<p><input type="text" class="form-control mt-2"  name='item_name' placeholder="상품이름: {{items.item_name}}" ></p>
-    
-<p> <input type="text" class="form-control mt-2"  name='item_price' placeholder="상품 가격: {{items.item_price}}" ></p>
-<p> <input type="text" class="form-control mt-2"  name='item_content' placeholder="내용: {{items.item_content}}" ></p>
+    <form method="POST" action="{% url 'boardEdit' items.pk %}">{% csrf_token %}
+        <p>작성자: {{items.user_name}}</p>
+        <p><input type="text" class="form-control mt-2" name='item_name' placeholder="상품이름: {{items.item_name}}"></p>
 
-    <select name="subject">
-    <option value="dealing">거래전</option>
-    <option value="deal_commit">거래완료</option>
-</select>
+        <p> <input type="text" class="form-control mt-2" name='item_price' placeholder="상품 가격: {{items.item_price}}">
+        </p>
+        <p> <input type="text" class="form-control mt-2" name='item_content' placeholder="내용: {{items.item_content}}">
+        </p>
 
 
+        <p>
+            <select name="trade_status">
+                <option name="trade_status" value="거래전">거래전</option>
+                <option name="trade_status" value="거래완료">거래완료</option>
+            </select>
+        </p>
+        <img src="{{ items.item_img.url }}" class="rounded float-start" name="item_img" alt="" width='50%'>
+        {% if login_user == post_user %}
+        <p>
+        <input class="btn btn-dark" type="submit" value="수정">
+        
+        <a href="upload/{{post.pk}}">삭제</a>
+        </p>
+  
+        {% endif %}
 
-<p>게시날짜: {{items.item_date}}</p>    
+    </form>
 
-   
-         
-    <img src = "{{ items.item_img.url }}" class="rounded float-start" alt="" width='80%'>
-
-    <!-- ---------------------------게시글 삭제 -->
-    
-    
-
-{% if login_user ==  post_user %} 
-
-<p>
-<a href="edit/{{post.pk}}">수정</a>  
-<a href="upload/{{post.pk}}">삭제</a>
-
-</p>
-{% endif %}
-
+      <!--         
+        {% comment %} <p>
+        <a href="edit/{{post.pk}}">수정</a>  
+        <a href="upload/{{post.pk}}">삭제</a>
+        
+        </p> {% endcomment %} -->
 
 
     <!-- 댓글기능(11.29) -->
-    
+
     <form method="POST" action="{% url 'create_comment' items.id %}">{% csrf_token %}
-        
+
         {{comments}}
-        
-        <input type="submit", value="완료">
+
+        <input type="submit" , value="완료">
         <!-- (related_name=post) -->
         {% for i in items.post.all %}
         <p>댓글: {{i}}</p>
         <p>작성자: {{i.user_name}}</p>
         <p>시간: {{i.comment_date}}</p>
         {% endfor %}
-        
+
     </form>
-    
+
 </body>

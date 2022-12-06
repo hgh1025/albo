@@ -22,7 +22,7 @@ class Item(models.Model):
     # item_id = models.AutoField(primary_key=True) #게시글ID
      #-------------------------------------------------
     STATUS = (('거래 전','거래 전'), ('거래 완료','거래 완료')) # 전자가 테이블 컬럼 출력값, 후자가 admin 페이지에서 출력
-    trade_status = models.CharField(max_length=5,default='거래 전', choices=STATUS, null=True) #거래상태(판매중,거래완료)
+    trade_status = models.CharField(max_length=5, default='거래 전', choices=STATUS, null=True) #거래상태(판매중,거래완료)
     item_price = models.IntegerField(null=True)
     item_content = models.TextField(max_length = 200) 
     item_img = models.ImageField(upload_to="images/", blank=True, null=True)

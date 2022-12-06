@@ -103,12 +103,7 @@ def upload(request):
     
 
 def posting(request):
-    # if request.method == "POST":
-    #     temp = request.POST.get('items_input')
-    #     new_item =  Item()
-    #     new_item.text = temp
-    #     new_item.save()
-    #     return render(request, 'main/posting.html',{'items':new_item})
+ 
     items = Item.objects.all().order_by('-pk') 
     # users = Item.objects.filter().select_related("write_name") #fk추가
     users = User.objects.get(user_name=request.session['user_name']) #fk추가
@@ -116,10 +111,10 @@ def posting(request):
     print(users)
 
     trade_status = request.POST.get('trade_status')
-    item_name = request.POST['item_name']
-    item_price =request.POST['item_price']
-    item_content = request.POST['item_content']
-    item_img= request.FILES['item_img']
+    item_name = request.POST.get('item_name',False)
+    item_price =request.POST.get('item_price',False)
+    item_content = request.POST.get('item_content',False)
+    item_img= request.FILES.get('item_img')
     now_HMS = datetime.today().strftime('%Y.%H.%M.%S')
     item_upload_name  = now_HMS + '.png'
     item_img.name = item_upload_name 
@@ -203,25 +198,29 @@ def remove_post(request, pk):
 
 def boardEdit(request, pk):
     # board = User.objects.filter(user_name=pk)
-    items = Item.objects.filter(user_name=pk)
+    items = Item.objects.get(pk=pk)
     # board = User.objects.filter(user_name=request.session['user_name'])
-    
+     
     if request.method == "POST":
        
-        item_name = request.POST['item_name']
-        item_content = request.POST['item_content']
-        item_price = request.POST['item_price']
-        item_img =request.FILES['item_img']
+        items.item_name = request.POST.get('item_name')
+        items.item_content = request.POST.get('item_content')
+        items.item_price = request.POST.get('item_price')
+        # items.item_img =request.FILES.get('item_img')
+        items.trade_status =request.POST.get('trade_status')
 
-        new_item = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, items=items)
-        # new_board = User(board=board)
-
-        new_item.save()
+        # new_item = Item(item_name=item_name, item_price=item_price, item_content=item_content, item_img = item_img, items=items)
+        # # new_board = User(board=board)
+        
+        items.save()
+        # new_item.save()
         # new_board.save()
-    
-    
-
-    return render(request, 'main/new_post.html', {'items':items})
+    items = Item.objects.all()
+    # context = dict()
+    # context['item'] = items  
+    print(type(items))
+    print(items)
+    return render(request, 'main/index.html', {'items':items})
  
    
 
